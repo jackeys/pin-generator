@@ -27,4 +27,20 @@ class PinFactoryTest extends Specification {
         where:
         length << [1, 4, 43]
     }
+
+    def "PINs are generated randomly"() {
+        setup: "A known sequence of values"
+        def sequence = [4, 7, 1, 3, 9, 8, 3, 4, 2, 9, 1, 3, 7, 5, 6, 9, 2, 3, 6, 7, 4]
+        Random randomMock = Mock()
+        randomMock.nextInt(_) >>> sequence
+
+        when: "Generating a PIN using our known sequence"
+        def pin = new PinFactory(randomMock).generatePin(length)
+
+        then: "The PIN should match the sequence up to our length"
+        pin.digits == sequence[0..<length]
+
+        where:
+        length << [1, 4, 8, 12]
+    }
 }

@@ -1,14 +1,14 @@
 package ca.paramnesia.pingenerator.pin
 
 import java.security.SecureRandom
+import java.util.Random
 
-fun SecureRandom.nextDigit() = Digit(this.nextInt(10))
+fun Random.nextDigit() = Digit(this.nextInt(10))
 
-class PinFactory {
+class PinFactory(private val random: Random = SecureRandom()) {
     fun generatePin(length: Int) : PIN {
         if (length <= 0) throw IllegalArgumentException("Cannot generate a pin of length $length")
 
-        val rng = SecureRandom()
-        return PIN(List(length) { rng.nextDigit() })
+        return PIN(List(length) { random.nextDigit() })
     }
 }
