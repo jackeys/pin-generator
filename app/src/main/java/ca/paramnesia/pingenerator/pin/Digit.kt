@@ -10,6 +10,18 @@ data class Digit(val value: Int) : Number(), Comparable<Digit> {
     fun compareTo(other: Int): Int = value.compareTo(other)
     override fun compareTo(other: Digit): Int = value.compareTo(other.value)
 
+    operator fun plus(other: Digit): Digit = Digit((value + other.value) % 10)
+    operator fun plus(number: Int): Digit = this + Digit(number)
+
+    operator fun minus(other: Digit): Digit {
+        var newValue = (value - other.value) % 10
+        if (newValue < 0) newValue += 10
+
+        return Digit(newValue)
+    }
+
+    operator fun minus(number: Int): Digit = this - Digit(number)
+
     override fun toByte(): Byte = value.toByte()
     override fun toChar(): Char = value.toChar()
     override fun toDouble(): Double = value.toDouble()
