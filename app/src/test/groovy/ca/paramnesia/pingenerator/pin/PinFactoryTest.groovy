@@ -22,7 +22,7 @@ class PinFactoryTest extends Specification {
         def pin = new PinFactory().generatePin(length)
 
         then: "The PIN length should match the input lengths"
-        pin.digits.size() == length
+        pin.length == length
 
         where:
         length << [1, 4, 43]
