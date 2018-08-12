@@ -25,6 +25,20 @@ class StepFilterTest extends Specification {
         ]
     }
 
+    def "PINs with short recognizable patterns should pass validation"() {
+        expect:
+        filter.verify(PIN.@Companion.from(digits))
+
+        where:
+        digits << [
+                [1, 2, 3, 5, 2, 8, 6, 0, 1],
+                [4, 5, 1, 3, 0, 2, 4, 6, 1, 1, 0 ,6, 4],
+                [1, 2, 9, 8],
+                [2, 4, 7, 9],
+                [1, 2, 6]
+        ]
+    }
+
     def "PINs where each digit ascends fail validation"() {
         expect:
         !filter.verify(PIN.@Companion.from(digits))
@@ -63,6 +77,18 @@ class StepFilterTest extends Specification {
                 [3, 3, 3],
                 [9, 9, 9, 9, 9, 9, 9, 9, 9],
                 [7, 7, 7, 7, 7]
+        ]
+    }
+
+    def "PINs that are almost entirely an unbroken sequence fail validation"() {
+        expect:
+        !filter.verify(PIN.@Companion.from(digits))
+
+        where:
+        digits << [
+                [2, 4, 6, 9],
+                [3, 7, 1, 1, 1, 1, 1, 1, 6],
+                [3, 2, 5, 4, 3, 2, 1]
         ]
     }
 }
