@@ -21,10 +21,6 @@ class StepFilter: Filter {
     override fun verify(pin: PIN): Boolean {
         if (pin.length <= minimumSensibleSteps) { return true }
 
-        // Since addition and subtraction are circular for digits, this accounts for ascending and descending
-        val stepCounts = HashMap<Int, Int>(10)
-        for (i in 0..9) { stepCounts[i] = 0 }
-
         // Generally, longer pins can have more consecutive steps without being insecure
         // Note that n characters in sequence have n-1 steps, hence why we subtract 1
         val consecutiveStepLimit = max(
@@ -32,15 +28,22 @@ class StepFilter: Filter {
                 minimumSensibleSteps
         )
 
+        var lastStep: Int? = null
+        var consecutiveSteps = 0
+
         pin.digits.windowed(2).forEach { (previous, current) ->
-            stepCounts.forEach { (step, count) ->
-                stepCounts[step] = if (current == previous + step) {
-                    if (count + 1 >= consecutiveStepLimit) { return false }
-                    else { count + 1 }
-                } else {
-                    0
+            val step = (current - previous).value
+
+            if (lastStep != step) {
+                consecutiveSteps = 1
+            } else {
+                consecutiveSteps += 1
+                if (consecutiveSteps >= consecutiveStepLimit) {
+                    return false
                 }
             }
+
+            lastStep = step
         }
 
         return true
