@@ -36,5 +36,31 @@ class DigitTest extends Specification {
         where:
         number << [*0..9]
     }
+
+    @Unroll
+    def "Digits #digit1 + #digit2 = #sum"() {
+        expect: "Digits add together like numbers, wrapping around if exceeding 9"
+        new Digit(digit1) + new Digit(digit2) == sum
+
+        where:
+        digit1 | digit2 || sum
+        1      | 1      || 2
+        5      | 3      || 8
+        6      | 8      || 4
+        4      | 0      || 4
+    }
+
+    @Unroll
+    def "Digits #digit1 - #digit2 = #difference"() {
+        expect: "Digits add together like numbers, wrapping around if exceeding 9"
+        new Digit(digit1) - new Digit(digit2) == difference
+
+        where:
+        digit1 | digit2 || difference
+        1      | 1      || 0
+        5      | 3      || 2
+        6      | 8      || 8
+        4      | 0      || 4
+    }
 }
 
